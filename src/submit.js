@@ -35,7 +35,7 @@ export const SubmitButton = () => {
         - Is the graph a DAG? ${data.is_dag ? "Yes" : "No"}
       `;
   
-      alert(message);  // Display the formatted message
+      alert(message); 
     } catch (error) {
       console.error('Error submitting pipeline:', error);
       alert("An error occurred while submitting the pipeline. Please try again.");

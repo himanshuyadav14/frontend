@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import PropTypes from "prop-types";
 import BaseNode from "./BaseNode";
 
-export const TextNode = ({ id, data }) => {
+export const TextNode = ({ id, data, onVariablesChange }) => {
   const [currText, setCurrText] = useState(data?.text || "{{input}}");
   const textareaRef = useRef(null);
 
+  // Extract variables enclosed in double curly braces
   const extractVariables = useCallback((text) => {
     const regex = /{{\s*(\w+)\s*}}/g;
     const variablesFound = [];
@@ -15,12 +17,15 @@ export const TextNode = ({ id, data }) => {
     return variablesFound;
   }, []);
 
+  // Memoize variables to prevent unnecessary re-renders
   const variables = useMemo(() => extractVariables(currText), [currText, extractVariables]);
 
+  // Handle text change
   const handleTextChange = (e) => {
     setCurrText(e.target.value);
   };
 
+  // Auto-resize textarea based on content
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -28,28 +33,31 @@ export const TextNode = ({ id, data }) => {
     }
   }, [currText]);
 
+  // Update variables when they change
   useEffect(() => {
-    data.variables = variables;
-  }, [variables, data]);
+    if (onVariablesChange) {
+      onVariablesChange(variables);
+    }
+  }, [variables, onVariablesChange]);
 
   return (
     <BaseNode
       id={id}
       title="Text"
       outputHandles={["output"]}
-      inputHandles={variables} // Unique handles
+      inputHandles={variables} // Dynamic handles based on variables
       data={{ text: currText, variables }}
     >
       <div className="space-y-3">
         <div className="flex flex-col space-y-1">
           <label
-            htmlFor="textInput"
+            htmlFor={`textInput-${id}`}
             className="text-sm font-medium text-gray-700"
           >
             Text:
           </label>
           <textarea
-            id="textInput"
+            id={`textInput-${id}`}
             value={currText}
             onChange={handleTextChange}
             ref={textareaRef}
@@ -60,4 +68,18 @@ export const TextNode = ({ id, data }) => {
       </div>
     </BaseNode>
   );
+};
+
+// PropTypes for validation
+TextNode.propTypes = {
+  id: PropTypes.string.isRequired,
+  data: PropTypes.shape({
+    text: PropTypes.string,
+  }).isRequired,
+  onVariablesChange: PropTypes.func,
+};
+
+// Default props
+TextNode.defaultProps = {
+  onVariablesChange: null,
 };

@@ -5,18 +5,17 @@ import { SubmitButton } from "./submit";
 
 function App() {
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
-  const [isButtonVisible, setIsButtonVisible] = useState(true);
 
   const toggleToolbar = () => {
-    if (isToolbarVisible) {
-      setTimeout(() => {
-        setIsButtonVisible(false);
-      }, 600);
-    } else {
-      setIsButtonVisible(true);
-    }
     setIsToolbarVisible((prev) => !prev);
   };
+
+  const toolbarTransform = isToolbarVisible
+    ? "translateY(0)"
+    : "translateY(-100%)";
+  const buttonTransform = isToolbarVisible ? "translateY(0)" : "translateY(-200%)";
+  const commonStyles =
+    "absolute top-44 left-10 p-3 z-10 transition-transform duration-300 ease-in-out text-gray-500 hover:text-[#6366f1]";
 
   return (
     <div className="h-screen overflow-hidden relative">
@@ -27,7 +26,7 @@ function App() {
               <i className="fa-regular fa-file-code"></i>
             </div>
             <div>
-              Vectorshift <i class="fa-solid fa-chevron-right"></i> Pipeline
+              Vectorshift <i className="fa-solid fa-chevron-right"></i> Pipeline
             </div>
           </div>
 
@@ -36,13 +35,8 @@ function App() {
 
         <button
           onClick={toggleToolbar}
-          className="absolute top-44 left-10 p-3 z-10 transition-transform duration-300 ease-in-out text-gray-500 hover:text-[#6366f1]"
-          style={{
-            transform: isToolbarVisible ? "rotate(0deg)" : "rotate(180deg)",
-          }}
-          style={{
-            transform: isToolbarVisible ? "translateY(0)" : "translateY(-200%)",
-          }}
+          className={commonStyles}
+          style={{ transform: buttonTransform }}
         >
           <i
             className={`transition-all duration-300 ease-in-out ${
@@ -56,11 +50,7 @@ function App() {
         {isToolbarVisible && (
           <div
             className="bg-white shadow-md p-2 flex justify-between items-center rounded-b-lg transition-transform duration-600 ease-in-out"
-            style={{
-              transform: isToolbarVisible
-                ? "translateY(0)"
-                : "translateY(-100%)",
-            }}
+            style={{ transform: toolbarTransform }}
           >
             <PipelineToolbar />
           </div>
@@ -68,9 +58,7 @@ function App() {
 
         <div
           className="flex-grow w-full transition-all duration-300 ease-in-out"
-          style={{
-            height: isToolbarVisible ? "80vh" : "92vh",
-          }}
+          style={{ height: isToolbarVisible ? "80vh" : "92vh" }}
         >
           <PipelineUI />
         </div>

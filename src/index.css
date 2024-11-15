@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 .react-flow__edge-path {
-    stroke: #6366f1 !important; /* Force blue color */
-    stroke-width: 2px !important; /* Force thickness */
+    stroke: #6366f1 !important;
+    stroke-width: 2px !important; 
   }
   
   .edge-delete-icon {
